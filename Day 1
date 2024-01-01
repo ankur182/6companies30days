@@ -1,0 +1,71 @@
+I.   Find Missing And Repeating:-
+1. (my approach)
+
+vector<int> findTwoElement(vector<int> arr, int n) {
+        unordered_map<int,int>mp;
+        for(auto it:arr){
+            mp[it]++;
+        }
+        int repeat=0;
+        for(auto it:mp){
+            if(it.second==2){
+                repeat=it.first;
+                break;
+            }
+        }
+        int miss=1;
+        for(int i=1;i<=n;i++){
+            if(mp.find(i)==mp.end()){
+                miss=i;
+                break;
+            }
+        }
+        return {repeat,miss};
+        
+}
+
+OR  
+(Good approach)
+ vector<int> findTwoElement(vector<int> arr, int n) {
+        unordered_map<int,int>mp;
+        for(auto it:arr){
+            mp[it]++;
+        }
+        int r=0,m=0;
+        for(int i=1;i<=n;i++){
+            if(mp[i]==0)m=i;
+            if(mp[i]==2)r=i;
+        }
+        return {r,m};
+        
+    }
+
+2. Number following a pattern
+
+string printMinNumberForPattern(string s){
+        int n = s.length(), current = 1, i = 0;
+        string ans;
+        ans.push_back('1');
+        while(i < n){
+            if(s[i] == 'D'){
+                int j = i;
+                while(j < n and s[j] == 'D'){
+                    j++;
+                }
+                int no_of_D = j - i;
+                current += no_of_D;
+                ans[i] = (current + '0');
+                int count = current;
+                while(i != j){
+                    count--;
+                    ans.push_back(count + '0');
+                    i++;
+                }
+            }else{
+                current++;
+                ans.push_back(current + '0');
+                i++;
+            }
+        }
+        return ans;
+    }

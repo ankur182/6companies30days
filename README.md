@@ -1,2 +1,1 @@
-# 6companies30days
- #ReviseWithArsh #6Companies30Days Challenge.
+With the new year, I am taking a resolution to sharpen my command over Data Structures and Algorithms, with the "6companies30days" challenge, in this challenge I will be solving 90 DSA problems in 30 days.

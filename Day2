@@ -1,0 +1,99 @@
+I.) MINIMIZE THE MAXIMUM OF TWO ARRAYS:
+
+CODE:-
+ #define ll long long
+    bool satisfy(ll d1,ll d2,ll c1,ll c2,int mid){
+        ll divbyd1=mid/d1,divbyd2=mid/d2;
+
+        ll notdivbyd1=mid-divbyd1,notdivbyd2=mid-divbyd2;
+
+        ll notdivbyboth=mid-mid/lcm(d1,d2);
+        
+        if(notdivbyd1>=c1 && notdivbyd2>=c2 && notdivbyboth>=c1+c2){
+            return true;
+        }
+        return false;
+    }
+    int minimizeSet(int div1, int div2, int c1, int c2) {
+        ll ans=INT_MAX,l=1,h=INT_MAX;
+        while(l<=h){
+            ll mid=l+(h-l)/2;
+            if(satisfy(div1,div2,c1,c2,mid)){
+                ans=min(ans,mid);
+                h=mid-1;
+            }
+            else{
+                l=mid+1;
+            }
+        }
+        return ans;
+    }
+
+
+II.)COMBINATION SUM III
+
+CODE:-
+vector<vector<int>>ans;
+    void helper(vector<int>temp,int k,int n,int sum, int Numsum){
+        if(sum==n){
+            if(temp.size()==k)ans.push_back(temp);
+            return ;
+        }
+        if(Numsum>9||sum>n)return ;//base case
+        //include
+        sum+=Numsum;
+        temp.push_back(Numsum);
+        helper(temp,k,n,sum,Numsum+1);
+        sum-=Numsum;
+        temp.pop_back();
+
+        //exclude
+        helper(temp,k,n,sum,Numsum+1);//backtrack
+    }
+    vector<vector<int>> combinationSum3(int k, int n) {
+        if(k>n)return {};
+        int sum=0, Numsum=1;
+        vector<int>temp;
+        helper(temp,k,n,sum,Numsum);
+        return ans;
+    }
+
+III.)Query Kth smallest Trimmed Number
+CODE:-
+
+vector<int> smallestTrimmedNumbers(vector<string>& nums, vector<vector<int>>& queries) {
+        vector <int> res;
+        for (auto q : queries) {
+            priority_queue <pair <string, int>, vector <pair<string, int>>, greater<pair<string, int>>> pq;
+            int k = q[0], trim = q[1];
+            for (int i = 0; i < nums.size(); i++) pq.push({nums[i].substr(nums[i].size()-trim), i});
+            for (int i = 1; i <k; i++) pq.pop();
+            res.push_back(pq.top().second);
+        }
+        return res;
+    }
+
+IV.) Run Length Encoding
+CODE:-
+
+string encode(string src)
+{     
+  string s="";
+  int cnt=1;
+  for(int i=1;i<=src.length();i++){
+      if(src[i-1]==src[i]){
+          cnt++;
+      }
+      else{
+          
+          s+=src[i-1];
+          string srr = to_string(cnt);
+          s+=srr;
+          cnt=1;
+      }
+      
+  }
+  return s;
+}     
+
+

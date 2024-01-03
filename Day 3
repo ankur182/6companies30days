@@ -1,0 +1,119 @@
+I.)MAXIMUM SUM BST
+CODE:-
+
+class Solution {
+public:
+//babbar
+class info
+{
+    public: 
+    int maxi;
+    int mini;
+    bool isBST;
+    int sum;
+};
+
+info solve(TreeNode* root, int &ans)
+{
+    // base case
+    if(root==NULL)
+    {
+        return {INT_MIN, INT_MAX, true, 0};
+    }
+
+    info left=solve(root->left, ans);
+    info right=solve(root->right, ans);
+
+    info currNode;
+
+    currNode.sum=left.sum + right.sum + root->val;
+    currNode.maxi=max(root->val, right.maxi);
+    currNode.mini=min(root->val, left.mini);
+
+    if(left.isBST && right.isBST && (root->val > left.maxi && root->val < right.mini))
+    {
+        currNode.isBST=true;
+    }
+    else
+    {
+        currNode.isBST=false;
+    }
+
+    // answer update
+    if(currNode.isBST)
+    {
+        ans=max(ans, currNode.sum);
+    }
+
+    return currNode;
+}
+    int maxSumBST(TreeNode* root) {
+        int maxSum=0;
+        info temp=solve(root, maxSum);
+        return maxSum;
+    }
+};
+
+II.) LETTER COMBINATION OF A PHONE NUMBER
+CODE-)
+
+void solve(string digits, vector<string>& ans, int index, string output, string mapping[]) {
+    if (index >= digits.length()) {
+        ans.push_back(output);
+        return;
+    }
+
+    int number = digits[index] - '0';
+    string temp = mapping[number];
+
+    for (int i = 0; i < temp.length(); i++) {
+        output.push_back(temp[i]);
+        solve(digits, ans, index + 1, output, mapping);
+        output.pop_back();
+    }
+}
+
+public:
+    vector<string> letterCombinations(string digits) {
+        vector<string> ans;
+
+        if (digits.length() == 0) return ans;
+
+        int index = 0;
+        string output = "";
+        string mapping[10] = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+
+        solve(digits, ans, index, output, mapping);
+        return ans;
+    }
+
+III.) Number of ways to reach a position after exactly k steps:
+CODE:-
+
+class Solution {
+public:
+
+  int f(int s, int i, int j, int k, int e, vector<vector<int>>& dp, int m)
+  {
+    if(i==k && j==e) return 1; // returns 1 if in k steps it has reached to the end point.
+    else if(i==k && j!=e) return 0;
+    
+    if(dp[i][j]!=-1) return dp[i][j];
+    
+    int l = 0, r = 0;
+    l = f(s, i+1, j-1, k, e, dp, m); // it will move 1 step left
+    r = f(s, i+1, j+1, k, e, dp, m); // it will move 1 step right   
+
+    
+    return dp[i][j] = (l+r)%m; // total ways to reach end point 
+  }
+
+    int numberOfWays(int s, int e, int k) {
+        
+      vector<vector<int>> dp(k+1, vector<int> (10000, -1));
+      int m =(1000000000 + 7);
+      s = s+1000; // shifting of coordinates to make -ve integers +ve.
+      e = e+1000;
+      return f(s, 0, s, k, e, dp, m)%m;
+    }
+};

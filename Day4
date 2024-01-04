@@ -1,0 +1,74 @@
+I.)RANDOM FLIP MATRIX
+CODE:-
+
+set<pair<int,int>> s;
+    int r , c; 
+    Solution(int m, int n) 
+    {
+        
+        r = m ; 
+        c = n ; 
+    }
+    
+    vector<int> flip() 
+    {
+        int x = rand()%r; 
+        int y = rand()%c; 
+        if(s.find({x,y})==s.end())
+        {    s.insert({x,y});
+            return {x,y};
+        }
+        else return flip();
+    }
+    
+    void reset() 
+    {
+         s.clear(); 
+    }
+
+II.)NUMBER OF PEOPLE AWARE OF SECRET
+CODE:-
+int peopleAwareOfSecret(int n, int d, int f) {
+        // d->Delay
+        //f->Forget
+        vector<long long> ans(n+1,0);
+        const int mod = 1e9+7;
+        ans[1] = 1; // At day one only one person know the secret
+        
+        for(int i=1;i<=n;i++)
+        {
+            if(ans[i]) // At day i if any one know the secret just check to how many new person these a[i] person can tell the secret
+            {
+                for(int j=i+d;j<=n&&j<=(i+f-1);j++)
+                {
+                    ans[j] = ((ans[j])%mod+(ans[i])%mod)%mod; // So after the delay period every jth day a[i] new people will know the secret
+                }
+            }
+        }
+        long long temp = 0;
+        for(int i=n;i>=(n-f+1)&&i>=1;i--) // At the end only last f days people will remeber the secret rest all will forget
+            temp = ((temp)%mod+(ans[i])%mod)%mod;
+        return temp%mod;//return ans
+    }
+
+III.)K DIVISIBLE ELEMENT SUBARRAYS
+CODE:
+int countDistinct(vector<int>& nums, int k, int p) {
+        int n=nums.size();
+        set<string> s;
+        for(int i=0;i<n;i++)
+        {
+            int count=0;
+            int sum=0;
+            string str="";
+            for(int j=i;j<n;j++)
+            {
+                str+=to_string(nums[j]);
+                str+='.';
+                if(nums[j]%p==0)count++;
+                if(count>k) break;
+                s.insert(str);
+            }
+        }
+        return s.size();
+    }

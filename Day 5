@@ -1,0 +1,101 @@
+I.) Map of highest peak
+
+CODE:
+class Solution {
+public:
+    vector<vector<int>> highestPeak(vector<vector<int>>& isWater) {
+        int r = isWater.size();
+        int c = isWater[0].size();
+        vector<vector<int>> ans(r,vector<int>(c,INT_MAX));
+        queue<pair<int,int>> q;
+        
+        for(int i = 0;i<r;i++){
+            for(int j = 0;j<c;j++){
+                if(isWater[i][j] == 1){
+                    q.push({i,j});
+                    ans[i][j] = 0;
+                }
+            }
+        }
+        
+        while(!q.empty()){
+            int x = q.front().first;
+            int y = q.front().second;
+            q.pop();
+            int dx[4] = {0,0,-1,1};
+            int dy[4] = {-1,1,0,0};
+            
+            for(int i = 0;i<4;i++){
+                int xx = x + dx[i];
+                int yy = y + dy[i];
+                
+                if(xx>=0 && xx<r && yy>=0 && yy<c && ans[xx][yy] > 1 + ans[x][y]){
+                    ans[xx][yy] = 1 + ans[x][y];
+                    q.push({xx,yy});
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+II.) FIND CONSECUTIVE INTEGERS FROM A DATA STREAM
+CODE:
+class DataStream {
+    map<int, int> m1;
+    int val, size;
+public:
+    DataStream(int value, int k) {
+        val = value, size = k;
+        m1[value] = k;
+    }
+    
+    bool consec(int num) {
+        if(num==val)    m1[val]--;
+        else            m1[val] = size;
+        return m1[val]<=0;
+    }
+};
+
+III.) HIGH ACCESS EMPLOYEES
+CODE:-
+class Solution {
+    //function for computing time
+    int computeTime(string &t1, string &t2){
+        int h1 = (t1[0] - '0')*10 + (t1[1] - '0');
+        int h2 = (t2[0] - '0')*10 + (t2[1] - '0');
+        int m1 = (t1[2] - '0')*10 + (t1[3] - '0');
+        int m2 = (t2[2] - '0')*10 + (t2[3] - '0');
+
+        if(h1 == h2){
+            return m2-m1;
+        }else if(h2 - h1 == 1){
+            return 60 - (m1-m2);
+        }
+        return INT_MAX; //answer not possible
+    }
+public:
+    vector<string> findHighAccessEmployees(vector<vector<string>>& access_times) {
+        vector<string> ans;
+
+        //creating hashmap
+        unordered_map<string,vector<string>> freq;
+        for(auto access_time: access_times){
+            freq[access_time[0]].push_back(access_time[1]);
+        }
+
+        //iterating in hashamp
+        for(auto &itr: freq){
+            if(itr.second.size() >= 3){
+                sort(itr.second.begin(),itr.second.end());
+                for(int i = 2; i < itr.second.size(); i++){
+                    if(computeTime(itr.second[i-2],itr.second[i]) < 60){
+                        ans.push_back(itr.first);
+                        break;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};

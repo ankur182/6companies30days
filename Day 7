@@ -1,0 +1,53 @@
+I.) Minimum moves to equal array elements II
+CODE:
+int minMoves2(vector<int>& nums) {
+        sort(nums.begin(),nums.end());
+        int n=nums.size();
+        int avg=nums[(n-1)/2];
+        int cnt=0;
+        for(auto it:nums){
+            cnt+=abs(it-avg);
+        }
+        return cnt;
+    }
+
+II.)Repeated DNA subsequences
+CODE:
+vector<string> findRepeatedDnaSequences(string s) {
+        map<string,int>mp;
+        if(s.size()<10)return {};
+        for(int i=0;i<s.size()-9;i++){
+            string str=s.substr(i,10);
+            mp[str]++;
+        }
+        vector<string>ans;
+        for(auto it:mp){
+            if(it.second>1){
+                ans.push_back(it.first);
+            }
+        }
+        return ans;
+    }
+
+III.) Count number of nice subarrays
+CODE:
+int numberOfSubarrays(vector<int>&v, int k) {
+        unordered_map<int,int>m;
+    //if number is odd put 1 in that place else ifnumber is  even put zero
+        for(int i=0;i<v.size();i++){
+            if(v[i]&1)v[i]=1;
+            else v[i]=0;
+        }
+        //similar to subarray with k sum
+        int sum=0,cnt=0;
+        for(int i=0;i<v.size();i++){
+            sum+=v[i];
+            if(sum==k)cnt++;//similar to mp[0]=1;
+
+            if(m.find(sum-k)!=m.end()){
+                cnt+=m[sum-k];
+            }
+            m[sum]++;
+        }
+        return cnt;
+    }

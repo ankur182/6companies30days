@@ -1,0 +1,129 @@
+I.) RANDOM POINT IN NON OVERLAPPING RECTANGLES
+
+CODE:-
+class Solution {
+public:
+    vector<int> v;
+    vector<vector<int>> rects;
+    
+    int area(vector<int>& r) {
+        return (r[2] - r[0] + 1) * (r[3] - r[1] + 1);
+    }
+    
+    Solution(vector<vector<int>> _) {
+        rects = _;
+        for (auto& r : rects) {
+            v.push_back(area(r) + (v.empty() ? 0 : v.back()));
+        }
+    }
+    
+    vector<int> pick() {
+        // https://leetcode.com/problems/random-pick-with-weight/description/
+        int rnd = rand() % v.back();
+        auto it = upper_bound(v.begin(), v.end(), rnd);
+        int idx = it - v.begin();
+        
+        // pick a random point in rect[idx]
+        auto r = rects[idx];
+        return {
+            rand() % (r[2] - r[0] + 1) + r[0],
+            rand() % (r[3] - r[1] + 1) + r[1]
+        };
+    }
+};
+
+II.)find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance
+code-
+ int findTheCity(int n, vector<vector<int>>& edges, int distanceThreshold) {
+        
+        vector<vector<int>> dist(n,vector<int>(n,1e9));
+        //creating asjancy matrix
+        for(auto node : edges){
+            dist[node[0]][node[1]] = node[2];
+            dist[node[1]][node[0]] = node[2];
+
+        }
+        //setting distance of node to itself = 0 
+        for(int i=0;i<n;i++) dist[i][i]=0;
+        //applying Floyd Warshall algorithm to find min distance between each node
+        for(int k=0;k<n;k++){
+            for(int i=0;i<n;i++){
+                for(int j=0;j<n;j++){
+                 if((dist[i][j] > dist[i][k] + dist[k][j]) && dist[i][k] !=1e9 && dist[k][j] !=1e9){
+                        dist[i][j] = dist[i][k] + dist[k][j];
+                    }
+                }
+            }
+        }
+        vector<int> Number_of_reachable_Cities(n,0);
+        
+        //traversing the distance 2D array to find the number of cities whose  
+        //min distance  from city i is less than and equal to distanceThreshold
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(i==j) continue;
+                if(dist[i][j]<=distanceThreshold){
+                     Number_of_reachable_Cities[i]++;  
+                }
+            }
+        }
+
+        int mn=1e9;
+        // find the minimum in Number_of_reachable_Cities this wil help to find
+        // smallest all the cities 
+        for(int i=0;i<n;i++){ 
+            mn = min(mn,Number_of_reachable_Cities[i]);
+        }
+        int mx=-1;
+        //finding  city with the greatest number If there are multiple such cities
+        for(int i=0;i<n;i++){
+            if(Number_of_reachable_Cities[i] == mn) mx = max(mx,i);  
+        }
+        return mx;
+    }
+
+iii.)maximum-product-of-the-length-of-two-palindromic-subsequences
+CODE:
+class Solution {
+    int n, ans = -1;
+    bool isPalindrome(string &p)
+    {
+        int i = 0, j = p.size()-1;
+        while(i <= j)
+        {
+            if(p[i] == p[j])
+            {
+                i++;
+                j--;
+            }
+            else
+                return false;
+        }
+        return true;
+    }
+    void dfs(string &s, string &a, string &b, int idx)
+    {
+        if(idx == n)
+        {
+            if(isPalindrome(a) && isPalindrome(b)){
+                int val = a.size()*b.size();
+                ans = max(val, ans);
+            }
+            return;
+        }
+        a.push_back(s[idx]);
+        dfs(s, a, b, idx+1);
+        a.pop_back();
+        b.push_back(s[idx]);
+        dfs(s, a, b, idx+1);
+        b.pop_back();
+        dfs(s, a, b, idx+1);
+    }
+public:
+    int maxProduct(string s) {
+        n = s.size();
+        string a = "", b = "";
+        dfs(s, a, b, 0);
+        return ans;
+    }
+};

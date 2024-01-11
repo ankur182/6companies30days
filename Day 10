@@ -1,0 +1,111 @@
+I.)Wiggle sort II
+Code:
+ void wiggleSort(vector<int>& nums) {
+        int n=nums.size();
+        priority_queue<int>q(nums.begin(),nums.end());
+        //put the largest number on odd index
+        for(int i=1;i<n;i+=2){
+            nums[i]=q.top();
+            q.pop();
+        }
+        for(int i=0;i<n;i+=2){
+            nums[i]=q.top();
+            q.pop();
+        }
+    }
+
+II.)Shopping Offers
+CODE:
+int solve(vector<int>& price, vector<vector<int>>& special, vector<int> needs, int index){
+        if(index==special.size()){
+            //Buy everything at the normal price
+            int res = 0;
+            for(int i=0;i<needs.size();i++){
+                res += needs[i] * price[i];
+            }
+            return res;
+        }
+        
+        //Reject Offer
+        int reject = solve(price, special, needs, index + 1);
+        
+        //Apply Offer 
+        for(int i=0;i<needs.size();i++){
+            needs[i] = needs[i] - special[index][i]; //Decrement the needs
+            if(needs[i] < 0) return reject; //Can't use this offer
+        }
+        
+        int accept = special[index][needs.size()] + solve(price, special, needs, index);
+        
+        return min(accept, reject);
+    }
+    
+    int shoppingOffers(vector<int>& price, vector<vector<int>>& special, vector<int>& needs) {
+        return solve(price, special, needs, 0);
+    }
+
+III.)Minimum cost to convert string I
+CODE:
+class Solution {
+public:
+    
+    vector<int>dikstra(unordered_map<int,vector<pair<int,int>>>&mp,int start){
+
+        //Dijkstra algo that returns a vector of size 26 where cells represent 
+        //the minimum cost to convert from a given character(start) to all other characters
+
+        priority_queue<pair<int,int>>pq;
+        vector<int>distances(26,INT_MAX);
+        distances[start]=0;
+        
+        pq.push({0,start});
+        while(pq.size()){
+            auto top=pq.top();
+            pq.pop();
+            int cost=top.first,node=top.second;
+            for(auto it:mp[node]){
+                int next_node=it.first,weight=it.second;
+                if(distances[next_node]>distances[node]+weight)
+                {
+                    pq.push({weight+distances[node],next_node});
+                    distances[next_node]=weight+distances[node];
+                }
+            }
+        }
+        
+        for(auto &it:distances){
+            if(it==2147483647)it=-1;
+        }
+        return distances;
+    }
+    long long minimumCost(string source, string target, vector<char>& original, vector<char>& changed, vector<int>& cost) {
+        unordered_map<int,vector<pair<int,int>>>mp;
+        int m=original.size(),n=source.size();
+        for(int i=0;i<m;i++){
+            int u=original[i]-'a',v=changed[i]-'a';
+            mp[u].push_back({v,cost[i]});
+        }
+        
+        vector<vector<int>>dist;
+        for(int i=0;i<26;i++){
+            dist.push_back(dikstra(mp,i));
+        }
+        
+        long long ans=0;
+        for(int i=0;i<n;i++){
+            int u=source[i]-'a', v=target[i]-'a';
+            int d=dist[u][v];
+            if(d==-1){
+                //No path exist to convert source -> target 
+                return -1;
+            }
+            else ans+=d;
+        }
+        
+        
+        
+        return ans;
+        
+        
+    }
+};

@@ -1,0 +1,79 @@
+I.)TOP K FREQUENT WORDS
+code:-
+
+bool comp(pair<string, int>&p1, pair<string, int>& p2){
+    if(p1.second==p2.second)
+        return p1.first<p2.first;
+    return p1.second>p2.second;
+}
+class Solution {
+public:
+    vector<string> topKFrequent(vector<string>& words, int k) {
+        unordered_map<string, int>m;
+        for(int i=0; i<words.size(); i++){
+            m[words[i]]++;
+        }
+        vector<pair<string, int>>v;
+        for(auto it:m){
+            v.push_back(make_pair(it.first, it.second));
+        }
+        sort(v.begin(), v.end(), comp);
+        vector<string> res;
+        for(int i=0; i<k; i++){
+            res.push_back(v[i].first);
+        }
+        return (res);
+    }
+};
+
+II.) Find subsequence of length k with the largest sum
+code:
+class Solution {
+public:
+    vector<int> maxSubsequence(vector<int>& a, int k) {
+        vector<int>b = a;
+        sort(b.begin(),b.end());
+        int n = a.size();
+        vector<int>ans;
+        unordered_map<int,int>mp;
+        int i=n-1;
+        while(k--){
+            mp[b[i]]++;
+            i--;
+        }
+        for(int i=0;i<n;i++){
+            if(mp.find(a[i])!=mp.end() and mp[a[i]]>0){
+                ans.push_back(a[i]);
+                mp[a[i]]--;
+            }
+        }
+        return ans;
+    }
+};
+
+III.)WORD BREAK:
+CODE:
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> words(wordDict.begin(), wordDict.end());
+        queue<int> q;
+        int n = s.size();
+        vector<bool> vis(n+1);
+        q.push(0);
+        while (!q.empty()) {
+            int u = q.front();
+            q.pop();
+            if (u == s.length()) {
+                return true;
+            }
+            for (int v = u + 1; v <= s.length(); v++) {
+                if (!vis[v] and words.find(s.substr(u, v - u)) != words.end()) {
+                    q.push(v);
+                    vis[v] = 1;
+                }
+            }
+        }
+        return false;
+    }
+};

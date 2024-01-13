@@ -1,0 +1,85 @@
+I.) EXTRA CHARACTERS IN A STRING
+CODE:
+int f(int i, string &s, unordered_map<string, int>& mp, vector<int>& dp) {
+        // if index exceeds the size return 0 base case
+        if(i >= s.size()) return 0;
+        // if already we counted this subproblem then no need to do the whole stuff, use dp array stored result
+        if(dp[i] != -1) return dp[i];
+        int ans = s.size();
+        string st = "";
+        for(int idx = i;idx < s.size();idx++) {
+            st += s[idx];
+            int extraString = st.size();
+            // if string is present in map then extracharacter should be 0
+            if(mp.find(st) != mp.end()) extraString = 0;
+            // calling recursive for other smaller problems
+            int nextSearch = f(idx+1, s, mp, dp);
+            // storing min ans in ans
+            ans = min(ans, extraString+nextSearch);
+        }
+        // storing dp array for further use of same subproblem
+        return dp[i] = ans;
+    }
+    int minExtraChar(string s, vector<string>& dictionary) {
+        unordered_map<string, int> mp;
+        vector<int> dp(s.size(), -1);
+        // storing the word in dict for checking whether it is present or not
+        for(auto dict : dictionary) {
+            mp[dict]=1;
+        }
+        // return using memoisation function f
+        return f(0, s, mp, dp);
+    }
+
+II.)SORT  CHARACTERS BY FREQUENCY
+CODE:
+string frequencySort(string s) {
+        string ans;
+        unordered_map<char,int>mp;
+        for(auto it:s){
+            mp[it]++;
+        }
+        vector<pair<int,char>>vec;
+        for(auto it:mp){
+            vec.push_back({it.second,it.first});
+        }
+        sort(vec.rbegin(),vec.rend());//dec order
+        for(auto it:vec){
+            int a=it.first;//freq
+            while(a){
+                ans+=it.second;
+                a--;
+            }
+        }
+        return ans;
+    }
+III.) BATTLESHIP IN BOARDS
+CODE:-
+int countBattleships(vector<vector<char>>& grid) {
+      int n=grid.size();
+        int m=grid[0].size();
+        int count=0;
+        for(int i=0;i<n;i++)
+        { for(int j=0;j<m;j++)
+            {
+                 if(grid[i][j]=='X')
+            {  dfs(grid,i,j);
+                count++;
+            }
+        }
+            
+        }
+        return count;
+    }
+    
+    void dfs(vector<vector<char>>& grid,int i,int j)
+    {
+        int n=grid.size();
+        int m=grid[0].size();
+        if(i<0 || j<0 || i>=n || j>=m || grid[i][j]!='X')
+            return ;
+        grid[i][j]='Y';
+        dfs(grid,i+1,j);
+        dfs(grid,i,j+1);
+        
+    }

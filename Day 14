@@ -1,0 +1,78 @@
+I.)VERIFY PREORDER SERIALIZATION IN A BINARY TREE
+CODE:-
+ bool isValidSerialization(string pre) {
+       //vacancy will be counted for every node .. vacancy means the number of more nodes that current node can generate i.e left and right child
+        
+        //initially root will occupy only 1 vacancy hence vacancy =1
+        int vac=1;
+        for(int i=0;i<pre.size();i++)
+        {
+            //if we encounter a , then do nothing
+            if(pre[i]==',')
+                continue;
+            
+            //reduce the vacancy as the current value eats up a vacancy by becoming the child of the previous parent node
+            vac--;
+            //increment the iterator till we encounter a nmbr because node value can be of more than one digit
+            while(i<pre.size() && pre[i]>='0'&&pre[i]<='9'&&pre[i]!=',')i++;
+            // if here we have an invalid vacancy then preorder is not correct i.e tree cannot be formed out of it
+            if(vac<0)
+                return false;
+            //if the current value is not # then it will contribute 2 vacancy of left and right child hence increase vacancy
+            if(pre[i]!='#')
+                vac+=2;
+        }
+        //if vacancy is still left but string is finished then we will return false
+        if(vac)
+            return false;
+        return true;
+    }
+
+II.)LARGEST DIVISIBLE SUBSET
+CODE:
+class Solution {
+public:
+    vector<int> ans;
+    vector<int> dp;
+    void lds(vector<int> temp,int i,int prev,vector<int>& nums){
+        if(i>=nums.size()){
+            if(temp.size()>ans.size()) ans=temp;
+            return;
+        }
+        //We can't directly use temp.size() without typecasting because it will return an unsigned int and hence if() will not work.
+        if((int)temp.size()>dp[i] && (nums[i]%prev==0)){ 
+            dp[i]=temp.size();
+            temp.push_back(nums[i]);
+            lds(temp,i+1,nums[i],nums);
+            temp.pop_back();
+        }
+        lds(temp,i+1,prev,nums);
+    }
+    
+    vector<int> largestDivisibleSubset(vector<int>& nums) {
+        sort(nums.begin(),nums.end());
+        for(int i=0;i<=nums.size();i++) dp.push_back(-1);
+        vector<int> temp;
+        lds(temp,0,1,nums);
+        return ans;
+    }
+};
+
+III.)get equal substrings withihn the budget
+code:
+int equalSubstring(string s, string t, int maxcost) {
+        int n=s.size();
+        int arr[n];
+        for(int i=0;i<n;i++)
+            arr[i]=abs(s[i]-t[i]);
+        int cost=0,start=0,maxlen=INT_MIN;
+        for(int i=0;i<n;i++){
+            cost+=arr[i];
+            while(cost>maxcost){
+                cost-=arr[start];
+                start++;
+            }
+            maxlen=max(maxlen,i-start+1);
+        }
+        return maxlen;
+    }

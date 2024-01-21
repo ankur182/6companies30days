@@ -1,0 +1,36 @@
+I.) Construct the longest new string
+CODE:
+ int longestString(int x, int y, int z) {
+        if(x==y)return (x+y+z)*2;
+        else return (min(x,y)+min(x,y)+1+z)*2;
+    }
+
+II.)Assign cookies
+CODE:
+int findContentChildren(vector<int>& g, vector<int>& s) {
+        sort(g.begin(), g.end());
+        sort(s.begin(), s.end());
+        int contentChildren = 0;
+        int cookieIndex = 0;
+        while (cookieIndex < s.size() && contentChildren < g.size()) {
+            if (s[cookieIndex] >= g[contentChildren]) {
+                contentChildren++;
+            }
+            cookieIndex++;
+        }
+        return contentChildren;
+    }
+
+III.)Query Kth smallest trimmed number
+CODE:
+vector<int> smallestTrimmedNumbers(vector<string>& nums, vector<vector<int>>& queries) {
+        vector <int> res;
+        for (auto q : queries) {
+            priority_queue <pair <string, int>, vector <pair<string, int>>, greater<pair<string, int>>> pq;
+            int k = q[0], trim = q[1];
+            for (int i = 0; i < nums.size(); i++) pq.push({nums[i].substr(nums[i].size()-trim), i});
+            for (int i = 1; i <k; i++) pq.pop();
+            res.push_back(pq.top().second);
+        }
+        return res;
+    }

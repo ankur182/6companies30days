@@ -1,0 +1,118 @@
+I.)find the diatance value between two arrays
+CODE:
+int findTheDistanceValue(vector<int>& arr1, vector<int>& arr2, int d) {
+        int cnt=0;
+        for(auto it: arr1){
+            int flag=0;
+            for(auto it1:arr2){
+                if(abs(it-it1) >d){
+                    flag=1;
+                }
+                else{
+                    flag=0;
+                    break;
+                }
+            }
+            if(flag==1){
+                cnt++;
+            } 
+        }
+        return cnt;
+    }
+
+II.)LRU cache
+code:
+class LRUCache {
+  public:
+    class node {
+      public:
+        int key;
+      int val;
+      node * next;
+      node * prev;
+      node(int _key, int _val) {
+        key = _key;
+        val = _val;
+      }
+    };
+
+  node * head = new node(-1, -1);
+  node * tail = new node(-1, -1);
+
+  int cap;
+  unordered_map < int, node * > m;
+
+  LRUCache(int capacity) {
+    cap = capacity;
+    head -> next = tail;
+    tail -> prev = head;
+  }
+
+  void addnode(node * newnode) {
+    node * temp = head -> next;
+    newnode -> next = temp;
+    newnode -> prev = head;
+    head -> next = newnode;
+    temp -> prev = newnode;
+  }
+
+  void deletenode(node * delnode) {
+    node * delprev = delnode -> prev;
+    node * delnext = delnode -> next;
+    delprev -> next = delnext;
+    delnext -> prev = delprev;
+  }
+
+  int get(int key_) {
+    if (m.find(key_) != m.end()) {
+      node * resnode = m[key_];
+      int res = resnode -> val;
+      m.erase(key_);
+      deletenode(resnode);
+      addnode(resnode);
+      m[key_] = head -> next;
+      return res;
+    }
+
+    return -1;
+  }
+
+  void put(int key_, int value) {
+    if (m.find(key_) != m.end()) {
+      node * existingnode = m[key_];
+      m.erase(key_);
+      deletenode(existingnode);
+    }
+    if (m.size() == cap) {
+      m.erase(tail -> prev -> key);
+      deletenode(tail -> prev);
+    }
+
+    addnode(new node(key_, value));
+    m[key_] = head -> next;
+  }
+};
+
+III.)Minimum non zero elements of the array elements
+code:
+long long MOD = 1000000007;
+    int minNonZeroProduct(int p) {
+        long long val = pow(2,p);    
+        val--;                          // val = 2^p -1 
+        long long K = val/2;            // we can make val/2 numbers to equal to "1" and "val-1" by swapping bits 
+        long long N = val-1;            
+        long long ans = expn(N,K);      // Multiplying "val-1" K times
+        return ans*((val)%MOD)%MOD;     // After performing swapping of bits, minimum product we can get is (val-1)^K * (val)
+    }
+    long long expn(long long N, long long K){
+        if(K==0) return 1;
+        if(K==1) return N%MOD;
+        if(K%2 ==0){
+            long long temp = expn(N,K/2);
+            return (temp*temp)%MOD;
+        }else{
+            long long temp = expn(N,K/2);
+            temp = (temp*temp)%MOD;
+            return (temp*(N%MOD))%MOD;
+        }
+    }

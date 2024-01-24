@@ -1,1 +1,73 @@
-hii
+I.)Kth largest element in the stream
+code:
+priority_queue<int,vector<int>,greater<int>>pq;//min heap
+    int size;
+    KthLargest(int k, vector<int>& nums) {
+        size=k;
+        for(int i=0;i<nums.size();i++){
+            pq.push(nums[i]);
+            if(pq.size()>k){
+                pq.pop();
+            }
+        }
+    }
+    
+    int add(int val) {
+        pq.push(val);
+        if(pq.size()>size){
+            pq.pop();
+        }
+        return pq.top();
+    }
+
+II.)Throne inheritance
+code:
+class ThroneInheritance {
+public:
+    unordered_map<string, vector<string>> map;
+    unordered_set<string> dead;
+    string nameOfKing;
+    
+    ThroneInheritance(string kingName) {
+        nameOfKing= kingName;
+    }
+    
+    void birth(string par, string child) {
+        map[par].push_back(child);
+    }
+    
+    void death(string name) {
+        dead.insert(name);
+    }
+    
+    
+    void helper(string par, vector<string> &ans){
+        if(dead.count(par)==0) ans.push_back(par);
+        for(auto child:map[par]) helper(child, ans);
+    }
+    
+    vector<string> getInheritanceOrder() {
+        vector<string> ans;
+        helper(nameOfKing, ans);
+        return ans;
+    }
+};
+
+III.)Length of longest subarray with atmost k frequency
+code:
+int maxSubarrayLength(vector<int> &nums, int k){
+        int j = 0;
+        int n = nums.size();
+        int mx = 0;
+        map<int, int> mp;
+        for (int i = 0; i < n; i++)
+        {
+            mp[nums[i]]++;
+            while(mp[nums[i]]>k){
+                mp[nums[j]]--;
+                j++;
+            }
+            mx=max(mx,i-j+1);
+        }
+        return mx;
+    }

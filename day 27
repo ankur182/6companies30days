@@ -1,0 +1,105 @@
+I.)merge k sorted lists
+  code:
+ListNode* mergeKLists(vector<ListNode*>& lists) {
+        int n=lists.size();
+        vector<int>v;
+        for(int i=0;i<n;i++){
+            ListNode*head=lists[i];//lists[0]--->v mei push ho jayega (1,4,5)
+            while(head){
+                v.push_back(head->val);
+                head=head->next;
+            }
+        }
+        sort(v.begin(),v.end());
+        ListNode*temp=new ListNode(0);
+        ListNode*ptr=temp;
+        for(int i=0;i<v.size();i++){
+            temp->next=new ListNode(v[i]);
+            temp=temp->next;
+        }
+        return ptr->next;
+    }
+
+II.)integer to english words
+  code:
+class Solution {
+public:
+    //globally declare arrays
+    string ones[20] = {"", " One", " Two", " Three", " Four", " Five", " Six", " Seven", " Eight", " Nine", " Ten", " Eleven", " Twelve", " Thirteen", " Fourteen", " Fifteen", " Sixteen", " Seventeen", " Eighteen", " Nineteen"};
+    string tens[10] = {"", " Ten", " Twenty", " Thirty", " Forty", " Fifty", " Sixty", " Seventy", " Eighty", " Ninety"};
+    string thousands[4] = {"", " Thousand", " Million", " Billion"};
+    //helper function
+    string helper(int n) {
+        if (n < 20) 
+            return ones[n];
+        if (n < 100) 
+            return tens[n / 10] + helper(n % 10);
+        if (n < 1000) 
+            return helper(n / 100) + " Hundred" + helper(n % 100);
+        for (int i = 3; i >= 0; i--) {
+            if (n >= pow(1000, i)) {
+                return helper(n / pow(1000, i)) + thousands[i] + helper(n % (int)pow(1000, i));
+            }
+        }
+        return "";
+    }
+
+    string numberToWords(int num) {
+        // edge case
+        if (num == 0) 
+            return "Zero";
+        return helper(num).substr(1);
+    }
+};
+
+III.)design add and search word data structure
+  code:
+class WordDictionary {
+public:
+    class Node{
+        public:
+        bool isend;
+        vector<Node*>child;
+        Node(){
+            isend=false;
+            child.resize(26,NULL);
+        }
+    };
+    Node*root;
+    WordDictionary() {
+        root=new Node();
+    }
+    
+    void addWord(string word) {
+        Node*temp=root;
+        for(char c:word){
+            int idx=c-'a';
+            if(temp->child[idx]==NULL)
+                temp->child[idx]=new Node();
+            temp=temp->child[idx];
+        }
+        temp->isend=true;
+    }
+    
+    bool find(Node*temp,string &str,int i) {
+        if(i==str.length()) return temp->isend;
+        if(str[i]=='.'){
+            for(int j=0;j<26;j++){
+                if(temp->child[j]){
+                    if(find(temp->child[j],str,i+1)) return true;
+                }
+            }
+        }
+        else{
+            int idx=str[i]-'a';
+            if(temp->child[idx]==NULL) return false;
+            temp=temp->child[idx];
+            return find(temp,str,i+1);
+        }
+        return false;
+    }
+    bool search(string word){
+        Node*temp=root;
+        return find(temp,word,0);
+    }
+};

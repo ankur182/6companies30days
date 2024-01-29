@@ -1,0 +1,78 @@
+I.)query kth smallest trimmed number
+  code:
+vector<int> smallestTrimmedNumbers(vector<string>& nums, vector<vector<int>>& queries) {
+        vector <int> res;
+        for (auto q : queries) {
+            priority_queue <pair <string, int>, vector <pair<string, int>>, greater<pair<string, int>>> pq;
+            int k = q[0], trim = q[1];
+            for (int i = 0; i < nums.size(); i++) pq.push({nums[i].substr(nums[i].size()-trim), i});
+            for (int i = 1; i <k; i++) pq.pop();
+            res.push_back(pq.top().second);
+        }
+        return res;
+    }
+
+II.)maximum product after k increments
+  code:
+int maximumProduct(vector<int>& nums, int k) {
+        priority_queue<int, vector<int>, greater<int>> minHeap;
+        int curr;
+        int mod = pow(10,9)+7;
+        long long int ans = 1;
+        for (auto &num:nums) {
+            minHeap.push(num);
+        }
+        while (k>0) {
+            curr = minHeap.top();
+            minHeap.pop();
+            minHeap.push(curr+1);
+            k--;
+        }
+        while (!minHeap.empty()) {
+            ans *= minHeap.top();
+            minHeap.pop();
+            ans %= mod;
+        }
+        return ans;
+    }
+
+III.)Number of good leaf node pair
+  code:
+ int ans = 0;
+    vector<int> f(TreeNode * curr,int dis){
+
+        if(curr==nullptr){
+            return {};
+        }
+
+        if(!curr->left and !curr->right){
+            return {1};
+        }
+
+        auto left = f(curr->left,dis);
+        auto right = f(curr->right,dis);
+
+        if(!left.empty() and !right.empty()){
+            vector<int>ret;
+            sort(right.begin(),right.end());
+            for(auto iter : left){
+                int pos = upper_bound(right.begin(),right.end(),dis-iter)-right.begin();
+                ans = ans + pos;
+            }
+        }
+
+        for(int i = 0;i<right.size();i++){
+            right[i]++;
+        }
+
+        for(auto iter : left){
+            right.push_back(iter+1);
+        }
+
+        return right;
+    }
+
+    int countPairs(TreeNode* root, int distance) {
+        f(root,distance);
+        return ans;
+    }

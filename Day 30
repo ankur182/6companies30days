@@ -1,0 +1,83 @@
+I.)Destroying asteroids
+code:
+bool asteroidsDestroyed(int mass, vector<int>& arr) {
+        sort(arr.begin(),arr.end());
+        long long x = mass;
+        for(int i=0; i<arr.size(); i++){
+            if(arr[i] > x) return false;
+            x += arr[i];
+        }
+        return true;
+    }
+
+II.)Stine game 4
+code:
+class Solution {
+public:
+    int stoneGameVI(vector<int>& a, vector<int>& b) {
+        priority_queue<pair<int, pair<int,int>>> pq;
+        
+        int alice=0, bob=0;
+        
+        for(int i=0; i<a.size(); i++){
+            pq.push({a[i]+b[i], {a[i], b[i]}});
+        }
+        
+        while(pq.size()){
+            alice += pq.top().second.first; pq.pop();
+            if(pq.size()) bob += pq.top().second.second, pq.pop();
+        }
+        
+        if(bob == alice) return 0;
+        if(bob > alice) return -1;
+        return 1;
+    }
+};
+
+III.)Count subtree with max distance with cities
+code:
+class Solution {
+public:
+    unordered_set<int> g[16];
+    int dfs(int u, int p, int &subtree, int &mx) {
+        subtree = subtree ^ (1 << (u - 1));  //clear visited Node bit.
+        int a = 0, b = 0;
+        for(auto v : g[u]) {
+            if(v == p) continue;
+            if((subtree & (1 << (v - 1))) == 0) continue; //the next node is not included in the subtree, ignore this node.
+            int res = dfs(v, u, subtree, mx) + 1;
+            if(res > a) {
+                b = a; a = res;
+            } else if(res > b) {
+                b = res;
+            }
+        }
+        mx = max(mx, a + b);    //get the maximum distance in the subtree.
+        return a;  //return the longest path from current node.
+    }
+    vector<int> countSubgraphsForEachDiameter(int n, vector<vector<int>>& edges) {
+        vector<int> ans(n - 1);
+        for(auto &e : edges) {     //build graph.
+            g[e[0]].insert(e[1]);
+            g[e[1]].insert(e[0]);
+        }
+        int size = 1 << n;
+        for(int i = 1; i < size; ++i) {
+            if(((i - 1) & i) == 0) continue;  //we don't need to calculate the subtree which have one node only.
+            int subtree = i;
+            int u = 0;
+            int mx = 0;
+            for(int j = 0; j < n; ++j) {  // to get the start node.
+                if((1 <<j) & i) {
+                    u = j + 1;
+                    break;
+                }
+            }
+            int res = dfs(u, -1, subtree, mx);
+            if(subtree == 0) {
+                ++ans[mx - 1];
+            }
+        }
+        return ans;
+    }
+};
